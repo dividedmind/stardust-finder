@@ -39,7 +39,7 @@
 
 #include <iostream>
 
-stardust::stardust() : dlingImage(0)
+stardust::stardust() : dlingImage(0), nextFrames(0)
 {
   triView = new TriView;
   setCentralWidget( triView );
@@ -466,6 +466,7 @@ void stardust::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
   progressBar = new QProgressBar(statusBar());
   statusBar()->addPermanentWidget(progressBar);
+  progressBar->hide();
 }
 
 void stardust::readSettings()

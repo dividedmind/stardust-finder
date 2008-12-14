@@ -92,7 +92,7 @@ void TriView::deriveImages(const QVector<QImage> &images)
   int height = images[0].height();
   int depth = images.size();
   QImage::Format format = images[0].format();
-  format = QImage::Format_RGB16;
+  format = QImage::Format_RGB32;
   
   // construct side view images
   for (int x = 0; x < width; x++) {
