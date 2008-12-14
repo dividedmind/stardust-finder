@@ -36,6 +36,7 @@ class QBuffer;
 class QHttpResponseHeader;
 class QProgressBar;
 class QLabel;
+class AboutBox;
 
 namespace Ui {
   class StardustConfig;
@@ -51,20 +52,15 @@ public:
   ~stardust();
 
 protected:
-  void closeEvent( QCloseEvent *event );
   void dragEnterEvent(QDragEnterEvent *event);
   void dropEvent(QDropEvent *event);
 
 private slots:
-  void newFile();
   void open();
   void openUrl();
   void openFromKonqueror();
-  bool save();
-  bool saveAs();
   void about();
   void preferences();
-  void documentWasModified();
   void cancelDownload();
   void requestFinished(int, bool);
   void readResponseHeader(const QHttpResponseHeader &);
@@ -99,13 +95,14 @@ private:
   void createStatusBar();
   void readSettings();
   void writeSettings();
-  bool maybeSave();
   void loadFiles( const QStringList &fileNames );
-  bool saveFile( const QString &fileName );
-  void setCurrentFile( const QString &fileName );
-  QString strippedName( const QString &fullFileName );
   void processImage();
   void findNextUrl(const QString &filename);
+    void createView();
+    void createConnector();
+    void createProgress();
+    void createHttp();
+    void createDialogs();
 
   QHttp *http;
   QString refPath;
@@ -125,9 +122,9 @@ private:
   
   TriView *triView;
   QLabel *info;
-  QTextEdit *textEdit;
-  QString curFile;
 
+  AboutBox *aboutBox;
+  
   QDialog *configDialog;
   Ui::StardustConfig *configDialog_ui;
   QString username, password;
@@ -141,24 +138,16 @@ private:
   
   
   QMenu *fileMenu;
-  QMenu *editMenu;
   QMenu *reportMenu;
   QMenu *helpMenu;
   QToolBar *fileToolBar;
-  QToolBar *editToolBar;
   QToolBar *reportToolBar;
-  QAction *newAct;
   QAction *openAct;
   QAction *openUrlAct;
   QAction *openKonqAct;
   QAction *connectAct;
-  QAction *saveAct;
-  QAction *saveAsAct;
   QAction *exitAct;
-  QAction *cutAct;
-  QAction *copyAct;
   QAction *preferencesAct;
-  QAction *pasteAct;
   QAction *aboutAct;
   QAction *aboutQtAct;
 };

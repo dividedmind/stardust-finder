@@ -4,13 +4,15 @@ SOURCES += stardust.cpp \
  imagestack.cpp \
  stardustconnector.cpp \
  standardanalyzer.cpp \
- imageanalyzer.cpp
+ imageanalyzer.cpp \
+ aboutbox.cpp
 HEADERS += stardust.h \
  triview.h \
  imagestack.h \
  stardustconnector.h \
  standardanalyzer.h \
- imageanalyzer.h
+ imageanalyzer.h \
+ aboutbox.h
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \
@@ -20,7 +22,8 @@ QT += network
 TARGET = ../bin/stardust
 RESOURCES = application.qrc
 FORMS += triview.ui \
- stardustconfig.ui
+ stardustconfig.ui \
+ aboutbox.ui
 
 
 DISTFILES += ../TODO
