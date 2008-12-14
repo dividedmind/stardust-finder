@@ -49,6 +49,11 @@ public:
 
   ~TriView();
   void clear();
+
+    
+
+    bool crosshairsShown() const;
+    
   
   typedef struct {
     QList<QImage> top, front, side;
@@ -56,13 +61,16 @@ public:
   
 signals:
   void moved();
+  void imageLoaded();
 
 private:
   void deriveImages(const QVector<QImage> &images);
   Ui_TriView *m_ui;
   ImageAnalyzer *analyzer;
+    bool m_crosshairsShown;
   
 private slots:
+  void setCrosshairsShown ( bool theValue );
   void analysisFinished(const TriView::ProcessedImages &images);
 };
 

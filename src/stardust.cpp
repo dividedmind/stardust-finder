@@ -219,12 +219,12 @@ void stardust::setupActionConnected(bool connected)
 {
   disconnect(connectAct, SIGNAL( triggered() ));
   if (!connected) {
-    connectAct->setIcon(QIcon( ":/connect_established.png" ));
+    connectAct->setIcon(QIcon( ":/connection-established.png" ));
     connectAct->setText(tr("&Connect to server"));
     connectAct->setStatusTip( tr( "Connect to the server and fetch movies" ) );
     connect( connectAct, SIGNAL( triggered() ), this, SLOT( connectToServer() ) );
   } else {
-    connectAct->setIcon(QIcon( ":/connect_no.png" ));
+    connectAct->setIcon(QIcon( ":/connect-no.png" ));
     connectAct->setText(tr("&Disconnect from server"));
     connectAct->setStatusTip( tr( "Disconnect from the server" ) );
     connect( connectAct, SIGNAL( triggered() ), connector, SLOT( logout() ) );
@@ -250,6 +250,8 @@ void stardust::cleanUp()
   respondNoFocusAct->setDisabled(true);
   respondNoTrackAct->setDisabled(true);
   respondTrackAct->setDisabled(true);
+  toggleCrosshairAct->setChecked(false);
+  toggleCrosshairAct->setDisabled(true);
   setupActionConnected(false);
 }
 
@@ -306,12 +308,12 @@ void stardust::error()
 
 void stardust::createActions()
 {
-  openAct = new QAction( QIcon( ":/fileopen.xpm" ), tr( "&Open..." ), this );
+  openAct = new QAction( QIcon( ":/document-open.png" ), tr( "&Open..." ), this );
   openAct->setShortcut( tr( "Ctrl+O" ) );
   openAct->setStatusTip( tr( "Open existing files" ) );
   connect( openAct, SIGNAL( triggered() ), this, SLOT( open() ) );
 
-  openUrlAct = new QAction( QIcon( ":/fileopenurl.png" ), tr( "Open &URL..." ), this );
+  openUrlAct = new QAction( QIcon( ":/network.png" ), tr( "Open &URL..." ), this );
   openUrlAct->setShortcut( tr( "Ctrl+U" ) );
   openUrlAct->setStatusTip( tr( "Open a remote set of images" ) );
   connect( openUrlAct, SIGNAL( triggered() ), this, SLOT( openUrl() ) );
@@ -348,19 +350,24 @@ void stardust::createActions()
   connect( respondNoFocusAct, SIGNAL( triggered() ),
            this, SLOT(respondNoFocus()) );
   
-  respondNoTrackAct = new QAction( tr( "No track" ), this);
+  respondNoTrackAct = new QAction( tr( "&No track" ), this);
   respondNoTrackAct->setShortcut(Qt::Key_Space);
   respondNoTrackAct->setStatusTip( tr( "Report no track" ));
   respondNoTrackAct->setDisabled(true);
   connect( respondNoTrackAct, SIGNAL( triggered() ),
            this, SLOT(respondNoTrack()) );
   
-  respondTrackAct = new QAction( tr( "Track" ), this);
+  respondTrackAct = new QAction( tr( "&Track" ), this);
   respondTrackAct->setShortcut(Qt::Key_Enter);
   respondTrackAct->setStatusTip( tr( "Report a track" ));
   respondTrackAct->setDisabled(true);
   connect( respondTrackAct, SIGNAL( triggered() ),
            this, SLOT(respondTrack()) );
+  
+  toggleCrosshairAct = new QAction( QIcon(":/cross_32.png"), tr( "&Crosshair"), this);
+  toggleCrosshairAct->setCheckable(true);
+  toggleCrosshairAct->setStatusTip( tr("Show or hide crosshair"));
+  connect(toggleCrosshairAct, SIGNAL(toggled(bool)), triView, SLOT(setCrosshairsShown(bool)));
 }
 
 void stardust::createMenus()
@@ -375,6 +382,8 @@ void stardust::createMenus()
   fileMenu->addSeparator();
   fileMenu->addAction( exitAct );
 
+  viewMenu = menuBar()->addMenu( tr( "&View" ) );
+  viewMenu->addAction( toggleCrosshairAct );
   reportMenu = menuBar()->addMenu( tr( "&Report" ) );
   reportMenu->addAction( respondTrackAct );
   reportMenu->addAction( respondNoTrackAct );
@@ -394,6 +403,9 @@ void stardust::createToolBars()
   fileToolBar->addAction( openUrlAct );
   fileToolBar->addAction( openKonqAct );
   fileToolBar->addAction( connectAct );
+  
+  viewToolBar = addToolBar( tr( "View" ) );
+  viewToolBar->addAction( toggleCrosshairAct );
 
   reportToolBar = addToolBar( tr( "Report" ) );
   reportToolBar->addAction( respondTrackAct );
@@ -670,6 +682,12 @@ void stardust::disconnected()
   cleanUp();
 }
 
+void stardust::imageLoaded()
+{
+  toggleCrosshairAct->setEnabled(true);
+  toggleCrosshairAct->setChecked(true);
+  statusBar()->showMessage( tr("Movie loaded."), 2000);
+}
 
 /*!
     \fn stardust::createView
@@ -682,6 +700,7 @@ void stardust::createView()
   info = new QLabel(this);
   triView->insertExtraWidget(info);
   connect(triView, SIGNAL(moved()), SLOT(updateStatusBar()));
+  connect(triView, SIGNAL(imageLoaded()), SLOT(imageLoaded()));
 }
 
 void stardust::createConnector()

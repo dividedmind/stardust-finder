@@ -84,6 +84,7 @@ private slots:
   void respondNoFocus();
   void respondTrack();
   void disconnected();
+  void imageLoaded();
 
 private:
   void setupActionConnected(bool connected);
@@ -138,9 +139,11 @@ private:
   
   
   QMenu *fileMenu;
+  QMenu *viewMenu;
   QMenu *reportMenu;
   QMenu *helpMenu;
   QToolBar *fileToolBar;
+  QToolBar *viewToolBar;
   QToolBar *reportToolBar;
   QAction *openAct;
   QAction *openUrlAct;
@@ -150,6 +153,8 @@ private:
   QAction *preferencesAct;
   QAction *aboutAct;
   QAction *aboutQtAct;
+  
+  QAction *toggleCrosshairAct;
 };
 
 #endif

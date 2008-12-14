@@ -38,7 +38,6 @@ void ImageStack::addImage( const QImage &image )
   if (m_stack.isEmpty())
     setPixmap(pixmap);
   m_stack.append(pixmap);
-  setDrawingLines(true);
 }
 
 void ImageStack::setImages( const QList<QImage> &images )
@@ -48,7 +47,6 @@ void ImageStack::setImages( const QList<QImage> &images )
   foreach (QImage image, images)
     m_stack.append(QPixmap::fromImage(image));
   showSlice(0);
-  setDrawingLines(true);
 }
 
 void ImageStack::clear()
