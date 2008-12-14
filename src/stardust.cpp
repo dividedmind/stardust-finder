@@ -25,6 +25,7 @@
 #include "ui_stardustconfig.h"
 #include "stardustconnector.h"
 #include "aboutbox.h"
+#include "version.h"
 
 #include <QTextEdit>
 #include <QTextStream>
@@ -73,7 +74,7 @@ void stardust::createDialogs()
   configDialog_ui->setupUi(configDialog);
   connect(configDialog, SIGNAL(accepted()), this, SLOT(preferencesAccepted()));
   
-  aboutBox = new AboutBox("0.1", this);
+  aboutBox = new AboutBox(VERSION, this);
 }
 
 void stardust::createHttp()

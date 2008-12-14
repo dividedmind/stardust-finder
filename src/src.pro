@@ -12,7 +12,8 @@ HEADERS += stardust.h \
  stardustconnector.h \
  standardanalyzer.h \
  imageanalyzer.h \
- aboutbox.h
+ aboutbox.h \
+ version.h
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \
@@ -31,3 +32,4 @@ DESTDIR = .
 
 CONFIG -= release
 
+DEFINES += SVN_REVISION=\\\"$$system(svnversion -n | perl -ne \'/\d+[MS]*$/ && print $&\')\\\"
