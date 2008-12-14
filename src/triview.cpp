@@ -19,9 +19,13 @@
  ***************************************************************************/
 #include "triview.h"
 #include "ui_triview.h"
+#include "standardanalyzer.h"
 
 #include <QImage>
 #include <QPainter>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QWaitCondition>
 
 TriView::TriView( QWidget *parent )
     : QWidget( parent ), m_ui( new Ui_TriView )
@@ -66,6 +70,11 @@ TriView::TriView( QWidget *parent )
           SIGNAL(moved()));
   connect(m_ui->zSlicer, SIGNAL(valueChanged(int)),
           SIGNAL(moved()));
+  
+  analyzer = new StandardAnalyzer();
+  qRegisterMetaType<TriView::ProcessedImages>("TriView::ProcessedImages");
+  connect(analyzer, SIGNAL(finished(const TriView::ProcessedImages&)), 
+          SLOT(analysisFinished(const TriView::ProcessedImages &)));
 }
 
 void TriView::setImages(const QVector<QImage> &images)
@@ -74,20 +83,23 @@ void TriView::setImages(const QVector<QImage> &images)
   m_ui->sideView->clear();
   m_ui->frontView->clear();
   
-  for (QVector<QImage>::const_iterator it = images.constBegin();
-       it != images.constEnd(); ++it)
-    m_ui->topView->addImage(*it);
+  analyzer->analyze(images.toList());
+}
+
+void TriView::analysisFinished(const ProcessedImages &images)
+{
+  m_ui->topView->setImages(images.top);
+  m_ui->sideView->setImages(images.side);
+  m_ui->frontView->setImages(images.front);
   
-  m_ui->zSlicer->setRange(0, images.size()-1);
+  m_ui->zSlicer->setRange(0, images.top.size()-1);
   m_ui->zSlicer->setValue(0);
-  m_ui->zSlicer2->setRange(0, images.size()-1);
+  m_ui->zSlicer2->setRange(0, images.top.size()-1);
   m_ui->zSlicer2->setValue(0);
-  m_ui->xSlicer->setRange(0, images[0].width()-1);
+  m_ui->xSlicer->setRange(0, images.side.size()-1);
   m_ui->xSlicer->setValue(0);
-  m_ui->ySlicer->setRange(0, images[0].height()-1);
+  m_ui->ySlicer->setRange(0, images.front.size()-1);
   m_ui->ySlicer->setValue(0);
-  
-  deriveImages(images);
 }
 
 void TriView::deriveImages(const QVector<QImage> &images)

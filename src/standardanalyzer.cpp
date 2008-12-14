@@ -17,57 +17,56 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef IMAGESTACK_H
-#define IMAGESTACK_H
+#include "standardanalyzer.h"
+#include "triview.h"
 
-#include <QLabel>
-#include <QVector>
 #include <QList>
-#include <QPixmap>
 #include <QImage>
-#include <QPoint>
+#include <QPainter>
 
-class QPainter;
-
-/**
- @author Rafał Rzepecki <divided.mind@gmail.com>
-*/
-class ImageStack : public QLabel
+StandardAnalyzer::StandardAnalyzer(QObject *parent)
+ : ImageAnalyzer(parent)
 {
-  Q_OBJECT
-  Q_PROPERTY(bool DrawingLines READ isDrawingLines WRITE setDrawingLines)
-public:
-  ImageStack( QWidget *parent = 0 );
+}
 
-  void addImage( const QImage &image );
-  void setImages( const QList<QImage> &images );
-  void clear();
-  bool isDrawingLines() const;
 
-  ~ImageStack();
+StandardAnalyzer::~StandardAnalyzer()
+{
+}
 
-public slots:
-  void showSlice(int slice);
-  void xMove(int newX);
-  void yMove(int newY);
-  void setDrawingLines(bool drawLines);
+TriView::ProcessedImages *StandardAnalyzer::performAnalysis(QList<QImage> top) const
+{
+  int width = top[0].width();
+  int height = top[0].height();
+  int depth = top.size();
+  QImage::Format format = top[0].format();
+  format = QImage::Format_RGB32;
+  
+  QList<QImage> side;
+  QList<QImage> front;
 
-signals:
-  void xMoved(int newX);
-  void yMoved(int newY);
-
-protected:
-  virtual void mousePressEvent(QMouseEvent * event);
-  virtual void mouseMoveEvent(QMouseEvent * event);
-  virtual void paintEvent ( QPaintEvent * event );
-
-private:
-  void checkMovement(QPoint pos);
-  QVector<QPixmap> m_stack;
-  QPoint m_pos;
-  int m_slice;
-  bool m_drawingLines;
-  QPainter *m_painter;
-};
-
-#endif
+  // construct side view images
+  for (int x = 0; x < width; x++) {
+    if (abort())
+      return 0;
+    QImage image(depth, height, format);
+    QPainter p(&image);
+    for (int z = 0; z < depth; z++)
+      p.drawImage(z, 0, top[z], x, 0, 1);
+    side.append(image);
+  }
+  
+  // construct front view images
+  for (int y = 0; y < height; y++) {
+    if (abort())
+      return 0;
+    QImage image(width, depth, format);
+    QPainter p(&image);
+    for (int z = 0; z < depth; z++)
+      p.drawImage(0, z, top[z], 0, y, -1, 1);
+    front.append(image);
+  }
+  
+  TriView::ProcessedImages result = { top, front, side };
+  return new TriView::ProcessedImages(result);
+}

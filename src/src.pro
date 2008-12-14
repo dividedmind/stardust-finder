@@ -2,11 +2,15 @@ SOURCES += stardust.cpp \
            main.cpp \
  triview.cpp \
  imagestack.cpp \
- stardustconnector.cpp
+ stardustconnector.cpp \
+ standardanalyzer.cpp \
+ imageanalyzer.cpp
 HEADERS += stardust.h \
  triview.h \
  imagestack.h \
- stardustconnector.h
+ stardustconnector.h \
+ standardanalyzer.h \
+ imageanalyzer.h
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \

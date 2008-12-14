@@ -22,8 +22,12 @@
 
 #include <QWidget>
 #include <QVector>
+#include <QThread>
 
 class Ui_TriView;
+class QMutex;
+class QWaitCondition;
+class ImageAnalyzer;
 
 /**
  @author Rafał Rzepecki <divided.mind@gmail.com>
@@ -44,14 +48,22 @@ public:
   int getZ() const;
 
   ~TriView();
-    void clear();
-
+  void clear();
+  
+  typedef struct {
+    QList<QImage> top, front, side;
+  } ProcessedImages;
+  
 signals:
   void moved();
 
 private:
   void deriveImages(const QVector<QImage> &images);
   Ui_TriView *m_ui;
+  ImageAnalyzer *analyzer;
+  
+private slots:
+  void analysisFinished(const TriView::ProcessedImages &images);
 };
 
 #endif
