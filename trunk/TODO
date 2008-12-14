@@ -1,4 +1,3 @@
-- turning crosshair off (or, even better, altering opacity)
 - proper (esp. network) error handling
 - multiple connectors -- to be able to preload several images ahead
   (a stack)
@@ -10,3 +9,4 @@
 - show progress status of processing
 - allow to abort background processes
 - only show statusbar progress bar
+- add icon sources and license

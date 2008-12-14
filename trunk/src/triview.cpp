@@ -31,6 +31,7 @@ TriView::TriView( QWidget *parent )
     : QWidget( parent ), m_ui( new Ui_TriView )
 {
   m_ui->setupUi( this );
+  setCrosshairsShown(false);
   
   connect(m_ui->xSlicer, SIGNAL(valueChanged(int)), 
           m_ui->sideView, SLOT(showSlice(int)));
@@ -100,6 +101,8 @@ void TriView::analysisFinished(const ProcessedImages &images)
   m_ui->xSlicer->setValue(0);
   m_ui->ySlicer->setRange(0, images.front.size()-1);
   m_ui->ySlicer->setValue(0);
+  
+  emit imageLoaded();
 }
 
 void TriView::deriveImages(const QVector<QImage> &images)
@@ -166,4 +169,20 @@ void TriView::clear()
   m_ui->zSlicer2->setRange(0, 0);
   m_ui->xSlicer->setRange(0, 0);
   m_ui->ySlicer->setRange(0, 0);
+}
+
+
+bool TriView::crosshairsShown() const
+{
+    return m_crosshairsShown;
+}
+
+
+void TriView::setCrosshairsShown ( bool theValue )
+{
+  m_ui->topView->setDrawingLines(theValue);
+  m_ui->sideView->setDrawingLines(theValue);
+  m_ui->frontView->setDrawingLines(theValue);
+  m_crosshairsShown = theValue;
+  update();
 }
