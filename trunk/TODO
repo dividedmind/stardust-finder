@@ -1,10 +1,9 @@
-- sane window state when starting up
 - proper cleaning up between modes
 - (pre)process in separate thread
 - GUI polishing
 - removing stale template functions
 - turning crosshair off (or, even better, altering opacity)
-
+- proper (esp. network) error handling
 - multiple connectors -- to be able to preload several images ahead
   (a stack)
   - this needs a stack of images (with associated connectors)

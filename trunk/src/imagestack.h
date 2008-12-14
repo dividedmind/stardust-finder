@@ -22,6 +22,7 @@
 
 #include <QLabel>
 #include <QVector>
+#include <QPixmap>
 #include <QImage>
 #include <QPoint>
 
@@ -60,7 +61,7 @@ protected:
 
 private:
   void checkMovement(QPoint pos);
-  QVector<QImage> m_stack;
+  QVector<QPixmap> m_stack;
   QPoint m_pos;
   int m_slice;
   bool m_drawingLines;

@@ -8,15 +8,20 @@ HEADERS += stardust.h \
  imagestack.h \
  stardustconnector.h
 TEMPLATE = app
-CONFIG += debug warn_on \
+CONFIG += warn_on \
 	  thread \
-          qt
+          qt \
+ debug
 QT += network
 TARGET = ../bin/stardust
 RESOURCES = application.qrc
 FORMS += triview.ui \
  stardustconfig.ui
 
-QMAKE_CXXFLAGS = -Wall -Werror
+QMAKE_CXXFLAGS = ""-Wall -Werror""
 
 DISTFILES += ../TODO
+DESTDIR = .
+
+CONFIG -= release
+

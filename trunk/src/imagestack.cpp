@@ -26,22 +26,27 @@
 #include <QPainter>
 
 ImageStack::ImageStack( QWidget *parent )
-    : QLabel( parent ), m_drawingLines(true)
+    : QLabel( parent )
 {
   m_painter = new QPainter();
+  clear();
 }
 
 void ImageStack::addImage( const QImage &image )
 {
+  QPixmap pixmap = QPixmap::fromImage(image);
   if (m_stack.isEmpty())
-    setPixmap(QPixmap::fromImage(image));
-  m_stack.append(image);
+    setPixmap(pixmap);
+  m_stack.append(pixmap);
+  setDrawingLines(true);
 }
 
 void ImageStack::clear()
 {
   m_stack.clear();
   m_slice = 0;
+  setDrawingLines(false);
+  m_pos = QPoint(0, 0);
 }
 
 ImageStack::~ImageStack()
@@ -49,13 +54,13 @@ ImageStack::~ImageStack()
 
 void ImageStack::mousePressEvent(QMouseEvent * event)
 {
-  checkMovement(event->pos());
+  checkMovement(event->pos() - QPoint(frameWidth(), frameWidth()));
 }
 
 void ImageStack::mouseMoveEvent(QMouseEvent * event)
 {
   if (event->buttons() & Qt::LeftButton)
-    checkMovement(event->pos());
+    checkMovement(event->pos() - QPoint(frameWidth(), frameWidth()));
 }
 
 void ImageStack::paintEvent(QPaintEvent * event)
@@ -63,16 +68,20 @@ void ImageStack::paintEvent(QPaintEvent * event)
   QLabel::paintEvent(event);
   if (m_drawingLines) {
     m_painter->begin(this);
-    m_painter->drawLine(m_pos.x(), 0, m_pos.x(), height());
-    m_painter->drawLine(0, m_pos.y(), width(), m_pos.y());
+    m_painter->drawLine(m_pos.x() + frameWidth(), frameWidth(), 
+                        m_pos.x() + frameWidth(), height() - frameWidth() - 1);
+    m_painter->drawLine(frameWidth(), m_pos.y() + frameWidth(), 
+                        width() - frameWidth() - 1, m_pos.y() + frameWidth());
     m_painter->end();
   }
 }
 
 void ImageStack::checkMovement(QPoint pos)
 {
-  pos.setX(qMax(0, qMin(pos.x(), width()-1)));
-  pos.setY(qMax(0, qMin(pos.y(), height()-1)));
+  if (!pixmap())
+    return;
+  pos.setX(qMax(0, qMin(pos.x(), pixmap()->width()-1)));
+  pos.setY(qMax(0, qMin(pos.y(), pixmap()->height()-1)));
   if (m_pos.x() != pos.x())
     emit xMoved(pos.x());
   if (m_pos.y() != pos.y())
@@ -105,7 +114,7 @@ void ImageStack::showSlice(int slice)
 {
   if (0 <= slice && slice < m_stack.size()) {
     m_slice = slice;
-    setPixmap(QPixmap::fromImage(m_stack[slice]));
+    setPixmap(m_stack[slice]);
   }
 }
 
