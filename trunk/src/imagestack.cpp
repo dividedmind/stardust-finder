@@ -53,7 +53,6 @@ void ImageStack::clear()
 {
   m_stack.clear();
   m_slice = 0;
-  setDrawingLines(false);
   m_pos = QPoint(0, 0);
 }
 
@@ -73,6 +72,8 @@ void ImageStack::mouseMoveEvent(QMouseEvent * event)
 
 void ImageStack::paintEvent(QPaintEvent * event)
 {
+  if (m_stack.isEmpty())
+    return;
   QLabel::paintEvent(event);
   if (m_drawingLines) {
     m_painter->begin(this);
