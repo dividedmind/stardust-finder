@@ -208,3 +208,19 @@ int StardustConnector::auth_get(const QString &path, QIODevice *to)
 StardustConnector::~StardustConnector()
 {
 }
+
+
+/*!
+    \fn StardustConnector::logout()
+    Log out from the server. If not connected, resets state.
+    (Really just loses the cookie.)
+ */
+void StardustConnector::logout()
+{
+  cookie = QString();
+  currentId = 0;
+  respPath = QString();
+  if (currentState == Connected)
+    emit disconnected();
+  currentState = NotConnected;
+}

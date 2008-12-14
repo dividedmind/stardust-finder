@@ -53,6 +53,7 @@ stardust::stardust() : dlingImage(0), nextFrames(0)
   connect(connector, SIGNAL(connecting()), SLOT(connecting()));
   connect(connector, SIGNAL(error()), SLOT(error()));
   connect(connector, SIGNAL(connected()), SLOT(connected()));
+  connect(connector, SIGNAL(disconnected()), SLOT(disconnected()));
   connect(connector, SIGNAL(newImage(const QUrl &, int)), 
           SLOT(loadUrl(const QUrl &, int)));
   connect(connector, SIGNAL(nextImage(const QUrl &, int)), 
@@ -89,6 +90,8 @@ stardust::stardust() : dlingImage(0), nextFrames(0)
   
   readSettings();
   
+  cleanUp();
+  
   if (autoConnect)
     connectToServer();
 
@@ -121,8 +124,10 @@ void stardust::open()
   if ( maybeSave() ) {
     QStringList fileNames = QFileDialog::getOpenFileNames( this );
 
-    if ( !fileNames.isEmpty() )
+    if ( !fileNames.isEmpty() ) {
+      cleanUp();
       loadFiles( fileNames );
+    }
   }
 }
 
@@ -135,13 +140,16 @@ void stardust::openUrl()
   
   if (ok && !text.isEmpty()) {
     QUrl url(text);
-    if (url.isValid())
+    if (url.isValid()) {
+      cleanUp();
       loadUrl(url);
+    }
   }
 }
 
 void stardust::openFromKonqueror()
 {
+  cleanUp();
   QProcess dcop;
   
   // find konqueror instances
@@ -254,6 +262,44 @@ void stardust::preferences()
   configDialog->exec();
 }
 
+void stardust::setupActionConnected(bool connected)
+{
+  disconnect(connectAct, SIGNAL( triggered() ));
+  if (!connected) {
+    connectAct->setIcon(QIcon( ":/connect_established.png" ));
+    connectAct->setText(tr("&Connect to server"));
+    connectAct->setStatusTip( tr( "Connect to the server and fetch movies" ) );
+    connect( connectAct, SIGNAL( triggered() ), this, SLOT( connectToServer() ) );
+  } else {
+    connectAct->setIcon(QIcon( ":/connect_no.png" ));
+    connectAct->setText(tr("&Disconnect from server"));
+    connectAct->setStatusTip( tr( "Disconnect from the server" ) );
+    connect( connectAct, SIGNAL( triggered() ), connector, SLOT( logout() ) );
+  }
+}
+
+void stardust::cleanUp()
+{
+  httpGetId = 0;
+  http->abort();
+  refPath = QString();
+  dlingImage = 0;
+  hideProgress();
+  dledImages.clear();
+  dlbuffer->close();
+  dlbuffer->setBuffer(0);
+  currentUrl = QUrl();
+  nextUrl = QUrl();
+  curFrames = nextFrames = 0;
+  connector->logout();
+  triView->clear();
+  info->clear();
+  respondNoFocusAct->setDisabled(true);
+  respondNoTrackAct->setDisabled(true);
+  respondTrackAct->setDisabled(true);
+  setupActionConnected(false);
+}
+
 void stardust::setupPreferences()
 {
   configDialog_ui->m_userName->setText( username );
@@ -281,6 +327,7 @@ void stardust::connectToServer()
     if (!configDialog->exec())
       return;
   }
+  cleanUp();
   connector->login(username, password);
 }
 
@@ -292,11 +339,11 @@ void stardust::connecting()
 void stardust::connected()
 {
   statusBar()->showMessage(tr("Connected to server."));
-  connectAct->setDisabled(true);
   
   respondTrackAct->setEnabled(true);
   respondNoTrackAct->setEnabled(true);
   respondNoFocusAct->setEnabled(true);
+  setupActionConnected(true);
 }
 
 void stardust::error()
@@ -331,9 +378,8 @@ void stardust::createActions()
   openKonqAct->setStatusTip( tr( "Open a set of images shown in Konqueror" ) );
   connect( openKonqAct, SIGNAL( triggered() ), this, SLOT( openFromKonqueror() ) );
   
-  connectAct = new QAction( QIcon( ":/connect_no.png" ), tr( "&Connect to server" ), this );
-  connectAct->setStatusTip( tr( "Connect to the server and fetch movies" ) );
-  connect( connectAct, SIGNAL( triggered() ), this, SLOT( connectToServer() ) );
+  connectAct = new QAction( this );
+  setupActionConnected(false);
   
   saveAct = new QAction( QIcon( ":/filesave.xpm" ), tr( "&Save" ), this );
   saveAct->setShortcut( tr( "Ctrl+S" ) );
@@ -788,4 +834,9 @@ void stardust::respondTrack()
            QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
       return;
   connector->respondTrack(triView->getX(), triView->getY(), triView->getZ());
+}
+
+void stardust::disconnected()
+{
+  cleanUp();
 }
