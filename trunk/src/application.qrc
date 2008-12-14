@@ -1,0 +1,14 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+      <file>editcopy.xpm</file>
+      <file>editcut.xpm</file>
+      <file>filenew.xpm</file>
+      <file>fileopen.xpm</file>
+      <file>editpaste.xpm</file>
+      <file>filesave.xpm</file>
+      <file>fileopenurl.png</file>
+      <file>konqueror.png</file>
+      <file>configure.png</file>
+      <file>connect_no.png</file>
+</qresource>
+</RCC>
