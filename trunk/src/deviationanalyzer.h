@@ -17,69 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef STARDUSTCONNECTOR_H
-#define STARDUSTCONNECTOR_H
+#ifndef DEVIATIONANALYZER_H
+#define DEVIATIONANALYZER_H
 
-#include <QObject>
-#include <QHttp>
-#include <QUrl>
+#include <imageanalyzer.h>
 
 /**
 	@author Rafał Rzepecki <divided.mind@gmail.com>
 */
-class StardustConnector : public QHttp
+class DeviationAnalyzer : public ImageAnalyzer
 {
 Q_OBJECT
 public:
-    StardustConnector(QObject *parent = 0);
-    void login(const QString &username, const QString &password);
-    int post(const QString & path, 
-             const QMap<QString, QString> &params,
-             QIODevice * to = 0);
-    int get(const QString &path, const QString &cookie, QIODevice *to = 0);
-    int auth_get(const QString &path, QIODevice *to = 0);
+    DeviationAnalyzer(QObject *parent = 0);
+    virtual TriView::ProcessedImages *performAnalysis(QList<QImage> top) const;
 
-    ~StardustConnector();
+    ~DeviationAnalyzer();
 
-public slots:
-  void respondNoFocus();
-  void respondNoTrack();
-  void respondTrack(int x, int y, int z);
-  void logout();
+  private:
+    static uint rgbFromWaveLength(double wave);
 
-protected slots:
-  void requestImages(const QString &path = "/ss_virtual_microscope.php");
-  
-signals:
-  void connecting();
-  void error();
-  void connected();
-  void newImage(const QUrl &path, int frames);
-  void nextImage(const QUrl &path, int frames);
-  void movieId(const QString &id);
-  void disconnected();
-  void userInfo(const QString &info);
-
-private slots:
-  void requestFinished(int id, bool error);
-  void responseHeaderReceived(const QHttpResponseHeader &resp);
-
-private:
-  void emitError();
-  void parseMicroscope(const QByteArray &page);
-  void parseInfo(const QString &info);
-
-  enum State {
-    NotConnected,
-    Connecting,
-    Connected
-  };
-  
-  const QString host;
-  State currentState;
-  int currentId;
-  QString cookie;
-  QString respPath;
 };
 
 #endif

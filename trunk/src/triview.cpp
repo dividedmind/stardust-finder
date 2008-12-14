@@ -22,6 +22,7 @@
 #include "standardanalyzer.h"
 
 #include <QImage>
+#include <QRgb>
 #include <QPainter>
 #include <QMutex>
 #include <QMutexLocker>
@@ -78,12 +79,18 @@ TriView::TriView( QWidget *parent )
           SLOT(analysisFinished(const TriView::ProcessedImages &)));
 }
 
-void TriView::setImages(const QVector<QImage> &images)
+void TriView::setImages(const QVector<QImage> &_images)
 {
   m_ui->topView->clear();
   m_ui->sideView->clear();
   m_ui->frontView->clear();
   
+  static QVector<QRgb> grayscale(256);
+  for (int i = 0; i < 256; i++)
+    grayscale[i] = qRgb(i,i,i);
+  QVector<QImage> images(_images.size());
+  for (int i = 0; i < _images.size(); i++)
+    images[i] = _images[i].convertToFormat(QImage::Format_Indexed8, grayscale);
   analyzer->analyze(images.toList());
 }
 
