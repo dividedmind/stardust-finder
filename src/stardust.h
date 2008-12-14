@@ -87,8 +87,11 @@ private slots:
   void respondNoTrack();
   void respondNoFocus();
   void respondTrack();
+  void disconnected();
 
 private:
+  void setupActionConnected(bool connected);
+  void cleanUp();
   void setupPreferences();
   void createActions();
   void createMenus();

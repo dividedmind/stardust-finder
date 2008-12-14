@@ -44,6 +44,7 @@ public:
   int getZ() const;
 
   ~TriView();
+    void clear();
 
 signals:
   void moved();

@@ -79,9 +79,13 @@ void TriView::setImages(const QVector<QImage> &images)
     m_ui->topView->addImage(*it);
   
   m_ui->zSlicer->setRange(0, images.size()-1);
+  m_ui->zSlicer->setValue(0);
   m_ui->zSlicer2->setRange(0, images.size()-1);
+  m_ui->zSlicer2->setValue(0);
   m_ui->xSlicer->setRange(0, images[0].width()-1);
+  m_ui->xSlicer->setValue(0);
   m_ui->ySlicer->setRange(0, images[0].height()-1);
+  m_ui->ySlicer->setValue(0);
   
   deriveImages(images);
 }
@@ -135,3 +139,19 @@ int TriView::getZ() const
 
 TriView::~TriView()
 {}
+
+
+/*!
+    \fn TriView::clear
+ */
+void TriView::clear()
+{
+  m_ui->topView->clear();
+  m_ui->sideView->clear();
+  m_ui->frontView->clear();
+
+  m_ui->zSlicer->setRange(0, 0);
+  m_ui->zSlicer2->setRange(0, 0);
+  m_ui->xSlicer->setRange(0, 0);
+  m_ui->ySlicer->setRange(0, 0);
+}

@@ -45,6 +45,7 @@ public slots:
   void respondNoFocus();
   void respondNoTrack();
   void respondTrack(int x, int y, int z);
+  void logout();
 
 protected slots:
   void requestImages(const QString &path = "/ss_virtual_microscope.php");
@@ -56,6 +57,7 @@ signals:
   void newImage(const QUrl &path, int frames);
   void nextImage(const QUrl &path, int frames);
   void movieId(const QString &id);
+    void disconnected();
   void userInfo(const QString &info);
 
 private slots:
