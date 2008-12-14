@@ -521,8 +521,7 @@ void stardust::downloadImages(const QUrl &url, int frames)
 
 void stardust::cancelDownload()
 {
-  http->abort();
-  hideProgress();
+  cleanUp();
 }
 
 void stardust::downloadNextImage()
