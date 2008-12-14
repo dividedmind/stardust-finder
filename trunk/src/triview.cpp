@@ -105,33 +105,6 @@ void TriView::analysisFinished(const ProcessedImages &images)
   emit imageLoaded();
 }
 
-void TriView::deriveImages(const QVector<QImage> &images)
-{
-  int width = images[0].width();
-  int height = images[0].height();
-  int depth = images.size();
-  QImage::Format format = images[0].format();
-  format = QImage::Format_RGB32;
-  
-  // construct side view images
-  for (int x = 0; x < width; x++) {
-    QImage image(depth, height, format);
-    QPainter p(&image);
-    for (int z = 0; z < depth; z++)
-      p.drawImage(z, 0, images[z], x, 0, 1);
-    m_ui->sideView->addImage(image);
-  }
-  
-  // construct front view images
-  for (int y = 0; y < height; y++) {
-    QImage image(width, depth, format);
-    QPainter p(&image);
-    for (int z = 0; z < depth; z++)
-      p.drawImage(0, z, images[z], 0, y, -1, 1);
-    m_ui->frontView->addImage(image);
-  }
-}
-
 void TriView::insertExtraWidget( QWidget *widget )
 {
   m_ui->gridLayout->addWidget(widget, 2, 2, 2, 2);

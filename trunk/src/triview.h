@@ -64,7 +64,6 @@ signals:
   void imageLoaded();
 
 private:
-  void deriveImages(const QVector<QImage> &images);
   Ui_TriView *m_ui;
   ImageAnalyzer *analyzer;
     bool m_crosshairsShown;
