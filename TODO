@@ -1,0 +1,13 @@
+- proper cleaning up between modes
+- (pre)process in separate thread
+- GUI polishing
+- removing stale template functions
+- refactor stardust.cpp
+- turning crosshair off (or, even better, altering opacity)
+
+- multiple connectors -- to be able to preload several images ahead
+  (a stack)
+  - this needs a stack of images (with associated connectors)
+  - consider either adding keepalive to connectors or deleting them
+    (and associated images) automatically
+  - should check session validity before displaying image
