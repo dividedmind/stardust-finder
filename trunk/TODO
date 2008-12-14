@@ -1,8 +1,8 @@
+- sane window state when starting up
 - proper cleaning up between modes
 - (pre)process in separate thread
 - GUI polishing
 - removing stale template functions
-- refactor stardust.cpp
 - turning crosshair off (or, even better, altering opacity)
 
 - multiple connectors -- to be able to preload several images ahead
