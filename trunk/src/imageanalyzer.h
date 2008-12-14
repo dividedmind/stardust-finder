@@ -17,57 +17,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef IMAGESTACK_H
-#define IMAGESTACK_H
+#ifndef IMAGEANALYZER_H
+#define IMAGEANALYZER_H
 
-#include <QLabel>
-#include <QVector>
+#include "triview.h"
+#include <QThread>
 #include <QList>
-#include <QPixmap>
 #include <QImage>
-#include <QPoint>
 
-class QPainter;
+class QMutex;
+class QWaitCondition;
 
 /**
- @author Rafał Rzepecki <divided.mind@gmail.com>
+	@author Rafał Rzepecki <divided.mind@gmail.com>
 */
-class ImageStack : public QLabel
+
+class ImageAnalyzer : public QThread
 {
   Q_OBJECT
-  Q_PROPERTY(bool DrawingLines READ isDrawingLines WRITE setDrawingLines)
-public:
-  ImageStack( QWidget *parent = 0 );
-
-  void addImage( const QImage &image );
-  void setImages( const QList<QImage> &images );
-  void clear();
-  bool isDrawingLines() const;
-
-  ~ImageStack();
-
-public slots:
-  void showSlice(int slice);
-  void xMove(int newX);
-  void yMove(int newY);
-  void setDrawingLines(bool drawLines);
-
-signals:
-  void xMoved(int newX);
-  void yMoved(int newY);
-
-protected:
-  virtual void mousePressEvent(QMouseEvent * event);
-  virtual void mouseMoveEvent(QMouseEvent * event);
-  virtual void paintEvent ( QPaintEvent * event );
-
-private:
-  void checkMovement(QPoint pos);
-  QVector<QPixmap> m_stack;
-  QPoint m_pos;
-  int m_slice;
-  bool m_drawingLines;
-  QPainter *m_painter;
+      
+  public:
+    ImageAnalyzer(QObject *parent = 0);
+    ~ImageAnalyzer();
+    void analyze(const QList<QImage> &images);
+  
+  protected:
+    void run();
+    bool abort() const;
+    virtual TriView::ProcessedImages *performAnalysis(QList<QImage> top) const = 0;
+  signals:
+    void finished(const TriView::ProcessedImages &images);
+    
+  private:
+    QMutex *mutex;
+    QWaitCondition *condition;
+    QList<QImage> m_images;
+    bool m_abort, m_restart;
 };
+
 
 #endif

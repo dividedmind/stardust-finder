@@ -17,57 +17,60 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef IMAGESTACK_H
-#define IMAGESTACK_H
+#include "imageanalyzer.h"
 
-#include <QLabel>
-#include <QVector>
-#include <QList>
-#include <QPixmap>
-#include <QImage>
-#include <QPoint>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QWaitCondition>
 
-class QPainter;
-
-/**
- @author Rafał Rzepecki <divided.mind@gmail.com>
-*/
-class ImageStack : public QLabel
+ImageAnalyzer::ImageAnalyzer(QObject *parent)
+  : QThread(parent)
 {
-  Q_OBJECT
-  Q_PROPERTY(bool DrawingLines READ isDrawingLines WRITE setDrawingLines)
-public:
-  ImageStack( QWidget *parent = 0 );
+  mutex = new QMutex();
+  condition = new QWaitCondition();
+  m_restart = m_abort = false;
+}
 
-  void addImage( const QImage &image );
-  void setImages( const QList<QImage> &images );
-  void clear();
-  bool isDrawingLines() const;
+ImageAnalyzer::~ImageAnalyzer()
+{
+  m_abort = true;
+  condition->wakeOne();
+  wait();
+}
 
-  ~ImageStack();
+void ImageAnalyzer::analyze(const QList<QImage> &images)
+{
+  QMutexLocker locker(mutex);
+  m_images = images;
+  
+  if (!isRunning())
+    start(LowPriority);
+  else {
+    m_restart = true;
+    condition->wakeOne();
+  }
+}
 
-public slots:
-  void showSlice(int slice);
-  void xMove(int newX);
-  void yMove(int newY);
-  void setDrawingLines(bool drawLines);
+bool ImageAnalyzer::abort() const
+{
+  return m_abort || m_restart;
+}
 
-signals:
-  void xMoved(int newX);
-  void yMoved(int newY);
-
-protected:
-  virtual void mousePressEvent(QMouseEvent * event);
-  virtual void mouseMoveEvent(QMouseEvent * event);
-  virtual void paintEvent ( QPaintEvent * event );
-
-private:
-  void checkMovement(QPoint pos);
-  QVector<QPixmap> m_stack;
-  QPoint m_pos;
-  int m_slice;
-  bool m_drawingLines;
-  QPainter *m_painter;
-};
-
-#endif
+void ImageAnalyzer::run()
+{
+  for(;;) {
+    mutex->lock();
+    QList<QImage> images = m_images;
+    mutex->unlock();
+    TriView::ProcessedImages *result = performAnalysis(images);
+    if (result && !m_restart) {
+      emit finished(*result);
+      delete result;
+    }
+    mutex->lock();
+    if (!m_restart)
+      condition->wait(mutex);
+    m_restart = false;
+    mutex->unlock();
+  }
+}

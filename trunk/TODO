@@ -1,4 +1,3 @@
-- proper cleaning up between modes
 - (pre)process in separate thread
 - GUI polishing
 - removing stale template functions
@@ -10,3 +9,4 @@
   - consider either adding keepalive to connectors or deleting them
     (and associated images) automatically
   - should check session validity before displaying image
+- show deviation instead of raw data
