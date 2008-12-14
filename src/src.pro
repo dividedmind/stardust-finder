@@ -32,4 +32,4 @@ DESTDIR = .
 
 CONFIG -= release
 
-DEFINES += SVN_REVISION=\\\"$$system(svnversion -n | perl -ne \'/\d+[MS]*$/ && print $&\')\\\"
+DEFINES += SVN_REVISION=$$quote(\\\"`svnversion -n | perl -ne \'/\d+[MS]*\$$/ && print \$$&\'`\\\")
