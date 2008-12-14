@@ -40,11 +40,17 @@ ImageAnalyzer::~ImageAnalyzer()
 
 void ImageAnalyzer::analyze(const QList<QImage> &images)
 {
+  foreach (QImage image, images)
+    if (!image.isGrayscale()) {
+      qWarning("Images are not grayscale.");
+      return;
+    }
   QMutexLocker locker(mutex);
   m_images = images;
   
   if (!isRunning())
-    start(LowPriority);
+    start(LowPriority)
+    ;
   else {
     m_restart = true;
     condition->wakeOne();
@@ -61,13 +67,19 @@ void ImageAnalyzer::run()
   for(;;) {
     mutex->lock();
     QList<QImage> images = m_images;
+    m_images.clear();
     mutex->unlock();
     TriView::ProcessedImages *result = performAnalysis(images);
-    if (result && !m_restart) {
-      emit finished(*result);
-      delete result;
-    }
+    images.clear();
     mutex->lock();
+    if (result && !abort())
+      emit finished(*result);
+    if (result)
+      delete result;
+    if (m_abort) {
+      mutex->unlock();
+      return;
+    }
     if (!m_restart)
       condition->wait(mutex);
     m_restart = false;

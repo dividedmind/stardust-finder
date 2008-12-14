@@ -22,7 +22,6 @@ RESOURCES = application.qrc
 FORMS += triview.ui \
  stardustconfig.ui
 
-QMAKE_CXXFLAGS = ""-Wall -Werror""
 
 DISTFILES += ../TODO
 DESTDIR = .
