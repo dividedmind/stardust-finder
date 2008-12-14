@@ -14,8 +14,8 @@
     <projectname>stardust</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
   </general>
   <kdevfileview>
     <groups>
@@ -64,7 +64,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -117,16 +117,16 @@
   </kdevdoctreeview>
   <kdevdebugger>
     <general>
-      <dbgshell></dbgshell>
+      <dbgshell/>
       <breakpoints/>
       <programargs/>
       <gdbpath>/usr/bin/gdb</gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -138,9 +138,9 @@
   <kdevtrollproject>
     <run>
       <mainprogram>/home/divide/projekty/stardust</mainprogram>
-      <programargs></programargs>
+      <programargs/>
       <directoryradio>executable</directoryradio>
-      <globaldebugarguments></globaldebugarguments>
+      <globaldebugarguments/>
       <globalcwd>/home/divide/projekty/stardust</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
@@ -152,13 +152,12 @@
     <general>
       <activedir>src</activedir>
     </general>
-    <subclassing/>
     <make>
       <abortonerror>true</abortonerror>
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>0</prio>
       <envvars>
         <envvar value="-O0 -Wall -Werror -g" name="CXXFLAGS" />
@@ -169,6 +168,7 @@
       <replacePaths>false</replacePaths>
       <disableDefaultOpts>true</disableDefaultOpts>
     </qmake>
+    <subclassing/>
   </kdevtrollproject>
   <workspace>
     <openfiles/>
@@ -186,7 +186,7 @@
     <projectdoc>
       <docsystem>Kolekcja dokumentacji programu Doxygen</docsystem>
       <docurl>stardust.tag</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>

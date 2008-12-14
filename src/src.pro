@@ -6,8 +6,7 @@ SOURCES += stardust.cpp \
 HEADERS += stardust.h \
  triview.h \
  imagestack.h \
- stardustconnector.h \
- imagestack_interface.h
+ stardustconnector.h
 TEMPLATE = app
 CONFIG += debug warn_on \
 	  thread \
@@ -18,5 +17,6 @@ RESOURCES = application.qrc
 FORMS += triview.ui \
  stardustconfig.ui
 
-QMAKE_CXXFLAGS = -Wall -WerrorDISTFILES += ../TODO
+QMAKE_CXXFLAGS = -Wall -Werror
 
+DISTFILES += ../TODO
