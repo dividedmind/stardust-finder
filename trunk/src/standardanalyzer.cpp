@@ -24,6 +24,8 @@
 #include <QImage>
 #include <QPainter>
 
+#include <string.h>
+
 StandardAnalyzer::StandardAnalyzer(QObject *parent)
  : ImageAnalyzer(parent)
 {
@@ -40,7 +42,7 @@ TriView::ProcessedImages *StandardAnalyzer::performAnalysis(QList<QImage> top) c
   int height = top[0].height();
   int depth = top.size();
   QImage::Format format = top[0].format();
-  format = QImage::Format_RGB32;
+  QVector<QRgb> colortable = top[0].colorTable();
   
   QList<QImage> side;
   QList<QImage> front;
@@ -50,9 +52,10 @@ TriView::ProcessedImages *StandardAnalyzer::performAnalysis(QList<QImage> top) c
     if (abort())
       return 0;
     QImage image(depth, height, format);
-    QPainter p(&image);
+    image.setColorTable(colortable);
     for (int z = 0; z < depth; z++)
-      p.drawImage(z, 0, top[z], x, 0, 1);
+      for (int y = 0; y < height; y++)
+        image.setPixel(z, y, top[z].pixelIndex(x, y));
     side.append(image);
   }
   
@@ -61,9 +64,9 @@ TriView::ProcessedImages *StandardAnalyzer::performAnalysis(QList<QImage> top) c
     if (abort())
       return 0;
     QImage image(width, depth, format);
-    QPainter p(&image);
+    image.setColorTable(colortable);
     for (int z = 0; z < depth; z++)
-      p.drawImage(0, z, top[z], 0, y, -1, 1);
+      memcpy(image.scanLine(z), top[z].scanLine(y), top[z].bytesPerLine());
     front.append(image);
   }
   
