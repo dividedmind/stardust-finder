@@ -1,0 +1,7 @@
+Makefile
+bin
+*.o
+moc_*
+qrc_*
+ui_*
+
