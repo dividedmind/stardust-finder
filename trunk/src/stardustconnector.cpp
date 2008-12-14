@@ -220,7 +220,8 @@ void StardustConnector::logout()
   cookie = QString();
   currentId = 0;
   respPath = QString();
-  if (currentState == Connected)
-    emit disconnected();
+  bool wasConnected = currentState == Connected;
   currentState = NotConnected;
+  if (wasConnected)
+    emit disconnected();
 }
