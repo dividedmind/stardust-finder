@@ -1,12 +1,15 @@
-- proper (esp. network) error handling
 - multiple connectors -- to be able to preload several images ahead
   (a stack)
   - this needs a stack of images (with associated connectors)
   - consider either adding keepalive to connectors or deleting them
     (and associated images) automatically
   - should check session validity before displaying image
-- show deviation instead of raw data
 - show progress status of processing
 - allow to abort background processes
 - only show statusbar progress bar
 - add icon sources and license
+- preprocess images in buffer
+- image analysis plugins
+- wheel changes focus
+- contrast stretching
+- changable colormaps

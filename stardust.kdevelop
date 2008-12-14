@@ -23,10 +23,13 @@
       <group pattern="*.ui" name="User Interface" />
       <group pattern="*.png" name="Icons" />
       <group pattern="*" name="Others" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevcppsupport>
@@ -76,6 +79,7 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
+    <references/>
   </kdevcppsupport>
   <kdevdoctreeview>
     <ignoretocs>
@@ -147,7 +151,9 @@
       <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
-      <envvars/>
+      <envvars>
+        <envvar value="1" name="QT_FATAL_WARNINGS" />
+      </envvars>
     </run>
     <general>
       <activedir>src</activedir>

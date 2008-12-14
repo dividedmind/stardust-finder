@@ -4,8 +4,8 @@ SOURCES += stardust.cpp \
  imagestack.cpp \
  stardustconnector.cpp \
  standardanalyzer.cpp \
- imageanalyzer.cpp \
- aboutbox.cpp
+ aboutbox.cpp \
+ imageanalyzer.cpp
 HEADERS += stardust.h \
  triview.h \
  imagestack.h \
