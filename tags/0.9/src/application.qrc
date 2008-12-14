@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+      <file>document-open.png</file>
+      <file>network.png</file>
+      <file>konqueror.png</file>
+      <file>configure.png</file>
+      <file>connect-no.png</file>
+      <file>connection-established.png</file>
+      <file>COPYING</file>
+      <file>cross_32.png</file>
+</qresource>
+</RCC>
