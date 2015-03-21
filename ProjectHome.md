@@ -1,0 +1,1 @@
+An application interfacing with stardust@home. It provides a desktop user interface, ahead downloading and cross-sections in all three dimensions, which help immensely in finding tracks.
